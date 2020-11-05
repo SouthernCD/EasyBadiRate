@@ -7,13 +7,13 @@ Using badirate to calculate gene families with significant expansion and contrac
 
 How it works
 ------------
-BadiRate is a program that estimates family turnover rates by likelihood-based methods. This EasyBadiRate can help you to investigate expansions and contractions of gene families with the gain-and-death (GD) model in BadiRate. 
+<a href="https://github.com/fgvieira/badirate">BadiRate</a> is a program that estimates family turnover rates by likelihood-based methods. This EasyBadiRate can help you to investigate expansions and contractions of gene families with the gain-and-death (GD) model in BadiRate. 
 
 Specifically, to calculate which lineages were significantly expanded or contracted, we used the free model in BadiRate to estimate the sizes of the ancestral gene families in all clades of the species tree. For the branches whose gene families did not experience family size changes, they were set to be the background branches, which have the same family turnover rate; thereafter, based on this model, we re-estimated the likelihood, and the model was regarded as the null hypothesis. For branches that experienced size changes, an alternative hypothesis for each branch was built by forcing the given branch to follow the same turnover rate with the background branches. A branch that experienced size changes was considered to be significant, if AIC (alternative hypothesis) - AIC (null hypothesis) > 2 (Akaike’s information criterion (AIC) was computed from the likelihood and numbers of parameters in each model). Hereafter, the significantly expanded and contracted gene families in all lineages were obtained.
 
 Install
 -------
-The project relies on <a href="https://biopython.org/">Biopython</a>, then you just need to clone this tool.
+The tool relies on python3 and <a href="https://biopython.org/">Biopython</a>, and you just need to clone this tool from github.
 
         pip install biopython
         git clone https://github.com/SouthernCD/EasyBadiRate.git
