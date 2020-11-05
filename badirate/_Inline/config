@@ -1,0 +1,9 @@
+version : 0.46
+languages : %
+    C : C
+types : %
+    C : compiled
+modules : %
+    C : Inline::C
+suffixes : %
+    C : so
