@@ -110,7 +110,7 @@ def two_better_than_one_significance(k1, Likelihood1, k2, Likelihood2):
     if max([AIC1, AIC2])-min([AIC1, AIC2]) > 2:
         if AIC1 > AIC2:
             return 1, AIC1, AIC2
-        elif AIC1 > AIC2:
+        elif AIC1 < AIC2:
             return -1, AIC1, AIC2
     else:
         return 0, AIC1, AIC2
