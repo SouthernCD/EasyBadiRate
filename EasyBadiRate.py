@@ -389,9 +389,8 @@ def main_pipeline(tag, size_file, species_tree, work_dir, badirate_path, label_t
 
     FR_output_file = output_file_list[best_like_FR_index]
 
-    ancestral_size = get_ancestral_size(best_like_FR_index)
+    ancestral_size = get_ancestral_size(FR_output_file)
     pure_gain, pure_loss = detect_pure_gain_and_loss(ancestral_size, all_branch)
-
 
     INPUT, mini_dict, Likelihood = badirate_output_parse(FR_output_file)
     back_branch = []
