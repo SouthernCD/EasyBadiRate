@@ -254,6 +254,44 @@ family = 0
 
     return [[clt_0_file, out_0_file], [clt_1_file, out_1_file]]
 
+def get_ancestral_size(file_name):
+    F1 = open(file_name)
+    # print file_name
+    all_text = F1.read()
+    info = all_text.split('--------------------\n')
+
+    label_tree_string = info[0].split("\n")[1]
+
+    for i in info[2].split('\n'):
+        match = re.match(r'\t\tTotal Ancestral Size\t(\S+)', i)
+        if match:
+            ancestral_size_string = match.group(1)
+
+    ancestral_size_tuple = re.findall(r'(\d+)',re.sub(r':\d+\.\d+','',ancestral_size_string))
+    label_tuple = re.findall(r'(\d+)',re.sub(r':\d+\.\d+','',label_tree_string))
+
+    ancestral_size_dict = {}
+
+    for i in range(len(label_tuple)):
+        ancestral_size_dict[label_tuple[i]] = int(ancestral_size_tuple[i])
+
+    F1.close()
+
+    return ancestral_size_dict
+
+
+def detect_pure_gain_and_loss(ancestral_size_dict, all_branch):
+    gain_list = []
+    loss_list = []
+    for branch in all_branch:
+        node_f, node_t = branch.split('->')
+        if ancestral_size_dict[node_f] == 0 and ancestral_size_dict[node_t] > 0:
+            gain_list.append(branch)
+        elif ancestral_size_dict[node_f] > 0 and ancestral_size_dict[node_t] == 0:
+            loss_list.append(branch)
+
+    return gain_list, loss_list
+
 
 def badirate_output_parse(file_name):
     F1 = open(file_name)
@@ -284,6 +322,8 @@ def badirate_output_parse(file_name):
                 if match2:
                     mini_dict[match2.group(1)] = [int(
                         match2.group(2)), int(match2.group(3))]
+
+    F1.close()
 
     return INPUT, mini_dict, float(Likelihood)
 
@@ -348,6 +388,10 @@ def main_pipeline(tag, size_file, species_tree, work_dir, badirate_path, label_t
         best_like_FR = like_FR[best_like_FR_index]
 
     FR_output_file = output_file_list[best_like_FR_index]
+
+    ancestral_size = get_ancestral_size(best_like_FR_index)
+    pure_gain, pure_loss = detect_pure_gain_and_loss(ancestral_size, all_branch)
+
 
     INPUT, mini_dict, Likelihood = badirate_output_parse(FR_output_file)
     back_branch = []
@@ -487,6 +531,9 @@ def main_pipeline(tag, size_file, species_tree, work_dir, badirate_path, label_t
             up_down['up'].append(i)
         elif mini_dict[i][1] >0:
             up_down['down'].append(i)
+
+    up_down['up'] = list(set(up_down['up'] + pure_gain))
+    up_down['down'] = list(set(up_down['down'] + pure_loss))
 
     printer=""
     for i in up_down['up']:
