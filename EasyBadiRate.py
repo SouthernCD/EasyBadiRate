@@ -534,6 +534,9 @@ def main_pipeline(tag, size_file, species_tree, work_dir, badirate_path, label_t
     up_down['up'] = list(set(up_down['up'] + pure_gain))
     up_down['down'] = list(set(up_down['down'] + pure_loss))
 
+    up_down['up'] = list(set(up_down['up']) - set(pure_gain))
+    up_down['down'] = list(set(up_down['down']) - set(pure_loss))
+
     printer=""
     for i in up_down['up']:
         printer=printer+i+","
@@ -546,8 +549,9 @@ def main_pipeline(tag, size_file, species_tree, work_dir, badirate_path, label_t
     printer = tag +"\t"+ printer
 
 
-    print("Tag\tGain\tLoss\tLikelihood")
-    print(tag,up_down['up'],up_down['down'],output_dict["eFR"]['Likelihood'])
+    print("Tag\tGain\tLoss\tExpansion\tContraction\tLikelihood")
+    print(tag, pure_gain, pure_loss, up_down['up'], up_down['down'],
+        output_dict["eFR"]['Likelihood'])
 
     if keep_tmp_dir:
         print("temp_dir is : %s" % work_dir)
